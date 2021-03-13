@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
-import '../styles/tasklist.scss'
+import '../styles/tasklist.scss';
 
-import { FiTrash, FiCheckSquare } from 'react-icons/fi'
+import { FiTrash, FiCheckSquare } from 'react-icons/fi';
 
 interface Task {
   id: number;
@@ -15,14 +15,38 @@ export function TaskList() {
   const [newTaskTitle, setNewTaskTitle] = useState('');
 
   function handleCreateNewTask() {
+    if (newTaskTitle === '') {
+      return
+    }
+
+    const task: Task = {
+      id: tasks.length + 1,
+      title: newTaskTitle,
+      isComplete: false
+    }
+    setTasks(oldTasks => [...oldTasks, task]);
+    setNewTaskTitle('');
     // Crie uma nova task com um id random, não permita criar caso o título seja vazio.
   }
 
   function handleToggleTaskCompletion(id: number) {
+    setTasks(oldTasks => {
+      const findedIndex = oldTasks.findIndex(task => task.id === id);
+      if (oldTasks[findedIndex].isComplete) {
+        oldTasks[findedIndex].isComplete = false;
+        return [...oldTasks];
+      }
+      oldTasks[findedIndex].isComplete = true;
+      return [...oldTasks];
+    });
     // Altere entre `true` ou `false` o campo `isComplete` de uma task com dado ID
   }
 
   function handleRemoveTask(id: number) {
+    setTasks(oldTasks => {
+      const tasks = oldTasks.filter(task => task.id !== id);
+      return tasks;
+    });
     // Remova uma task da listagem pelo ID
   }
 
